@@ -2,11 +2,9 @@ package controller;
 
 import java.io.IOException;
 
-
-import command.AddTransacoesCommand;
-import command.AtualizarTransacoesCommand;
-import command.ExcluirTransacoesCommand;
-import command.ListarTransacoesCommand;
+import chain.ChainAbstract;
+import chain.Handler;
+import chain.HandlerFactory;
 import command.TransacaoDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,35 +14,35 @@ import jakarta.servlet.http.HttpServletResponse;
 
 
 import command.Command;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
 
-import java.io.IOException;
 
 @WebServlet("/transacoes/*")
 public class FrontControllerServlet extends HttpServlet {
-
-    private TransacaoDispatcher dispatcher;
-
-    @Override
-    public void init() {
-        dispatcher = new TransacaoDispatcher();
-    }
+	
+	private Handler chain;
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    public void init() throws ServletException {
         try {
-            Command comando = dispatcher.resolver(request);
-            if (comando != null) {
-                comando.execute(request, response);
-            } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Rota não encontrada.");
-            }
+            this.chain = HandlerFactory.createChain();
         } catch (Exception e) {
-            e.printStackTrace(); 
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            throw new ServletException("Erro ao inicializar cadeia de handlers", e);
         }
     }
+
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+        	  System.out.println("Request method: " + request.getMethod() + ", PathInfo: " + request.getPathInfo());
+            if (chain != null) {
+                chain.handle(request, response);
+            } else {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "API endpoint não configurado");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro interno do servidor.");
+        }
+    }
+
 }

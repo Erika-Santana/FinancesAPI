@@ -1,34 +1,42 @@
 package command;
 
-import command.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import chain.AddTransacoesChain;
+import chain.BuscarTransacoesPorIDChain;
+import chain.ChainAbstract;
+import chain.ExcluirTransacoesChain;
+import chain.ListarTransacoesChain;
+import chain.ResumoTransacoesChain;
+import chain.UpdateTransacoesChain;
+
 public class TransacaoDispatcher {
 
-    private final Map<String, Command> rotas = new HashMap<>();
+    private ChainAbstract chain;
 
     public TransacaoDispatcher() {
-        rotas.put("GET:/", new ListarTransacoesCommand());
-        rotas.put("POST:/", new AddTransacoesCommand());
-        rotas.put("GET:/id", new BuscarTransacaoPorIdCommand());
-        rotas.put("PUT:/id", new AtualizarTransacoesCommand());
-        rotas.put("DELETE:/id", new ExcluirTransacoesCommand());
+    	ChainAbstract listar = new ListarTransacoesChain();
+    	ChainAbstract buscar = new BuscarTransacoesPorIDChain();
+    	ChainAbstract criar = new AddTransacoesChain();
+    	ChainAbstract atualizar = new UpdateTransacoesChain();
+    	ChainAbstract excluir = new ExcluirTransacoesChain();
+    	ChainAbstract resumo = new ResumoTransacoesChain();
+
+        listar.setNext(buscar);
+        buscar.setNext(criar);
+        criar.setNext(atualizar);
+        atualizar.setNext(excluir);
+        excluir.setNext(resumo);
+       
+
+        this.chain = listar;
     }
 
-    public Command resolver(HttpServletRequest request) {
-        String method = request.getMethod();
-        String path = request.getPathInfo(); 
-
-        if (path == null || path.equals("/")) {
-            return rotas.get(method + ":/");
-        } else if (path.matches("^/\\d+$")) {
-            return rotas.get(method + ":/id");
-        }
-
-        return null;
+    public void dispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        chain.handle(request, response);
     }
 }
-

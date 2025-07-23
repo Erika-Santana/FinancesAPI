@@ -1,7 +1,8 @@
 package factory;
 
 import enumTipos.TipoBanco;
-import model.connection.TransacoesDAO;
+
+import model.TransacoesDAO;
 import model.connection.TransacoesIMP;
 
 public class TransicoesDatabaseFactory {

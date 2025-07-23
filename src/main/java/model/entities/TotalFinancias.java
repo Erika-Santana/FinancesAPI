@@ -9,7 +9,4 @@ public class TotalFinancias {
     private double totalDespesas;
     private double saldoAtual;
     private Map<TipoCategoria, Double> despesasPorCategoria;
-
-
-
 }
