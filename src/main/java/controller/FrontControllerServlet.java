@@ -33,7 +33,7 @@ public class FrontControllerServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-        	  System.out.println("Request method: " + request.getMethod() + ", PathInfo: " + request.getPathInfo());
+        	 
             if (chain != null) {
                 chain.handle(request, response);
             } else {

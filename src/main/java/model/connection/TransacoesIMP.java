@@ -21,7 +21,7 @@ public class TransacoesIMP implements TransacoesDAO{
 	private static final String ATUALIZAR_TRANSACOES = "UPDATE transacoes SET descricao = ?, valor = ?, tipo = ?, categoria = ? WHERE ID = ?";
 	private static final String BUSCAR_TRANSACAO_POR_ID = "SELECT * FROM transacoes WHERE id = ?" ;
 	private static final String CALCULA_SALDO = " SELECT SUM(CASE WHEN tipo = 'RECEITAS' THEN valor ELSE 0 END) -  SUM(CASE WHEN tipo = 'DESPESAS' THEN valor ELSE 0 END) AS saldo FROM transacoes";
-	
+	private static final String TOTAL_POR_CATEGORIA = "SELECT categoria, SUM(valor) as total FROM transacoes WHERE tipo = ? GROUP BY categoria";
 	@Override
 	public boolean criarTransacao(Transacoes transacao) {
 		
@@ -169,10 +169,10 @@ public class TransacoesIMP implements TransacoesDAO{
 	public Map<String, Double> totalPorCategoria(String tipo) {
 	    Map<String, Double> resultado = new HashMap();
 
-	    String sql = "SELECT categoria, SUM(valor) as total FROM transacoes WHERE tipo = ? GROUP BY categoria";
+	    
 
 	    try (var conn = DatabaseConnection.getConnection();
-	         var stmt = conn.prepareStatement(sql)) {
+	         var stmt = conn.prepareStatement(TOTAL_POR_CATEGORIA)) {
 
 	        stmt.setString(1, tipo);
 	        ResultSet rs = stmt.executeQuery();

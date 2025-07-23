@@ -8,10 +8,9 @@ public class ResumoTransacoesChain extends ChainAbstract {
 
 	@Override
 	protected boolean canHandle(HttpServletRequest request) {
-		  System.out.print("Entrou na minha chain do Resumo");
+		
 		  String path = request.getPathInfo();
-		  System.out.println("ResumoTransacoesChain.canHandle pathInfo: " + path);
-		    return "GET".equals(request.getMethod()) && "/resumo".equals(path);
+			    return "GET".equals(request.getMethod()) && "/resumo".equals(path);
 	}
 
     
