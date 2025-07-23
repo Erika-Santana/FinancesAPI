@@ -1,0 +1,10 @@
+{
+  "chain": [
+    "chain.ListarTransacoesChain",
+    "chain.BuscarTransacoesPorIDChain",
+    "chain.AddTransacoesChain",
+    "chain.UpdateTransacoesChain",
+    "chain.ExcluirTransacoesChain",
+    "chain.ResumoTransacoesChain"
+  ]
+}

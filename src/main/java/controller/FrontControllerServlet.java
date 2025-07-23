@@ -24,7 +24,7 @@ public class FrontControllerServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         try {
-            this.chain = HandlerFactory.createChain();
+            this.chain = HandlerFactory.build();
         } catch (Exception e) {
             throw new ServletException("Erro ao inicializar cadeia de handlers", e);
         }

@@ -20,7 +20,7 @@ public class TransacoesIMP implements TransacoesDAO{
 	private static final String DELETAR_TRANSACAO = "DELETE FROM transacoes WHERE ID = ?";
 	private static final String ATUALIZAR_TRANSACOES = "UPDATE transacoes SET descricao = ?, valor = ?, tipo = ?, categoria = ? WHERE ID = ?";
 	private static final String BUSCAR_TRANSACAO_POR_ID = "SELECT * FROM transacoes WHERE id = ?" ;
-			
+	private static final String CALCULA_SALDO = " SELECT SUM(CASE WHEN tipo = 'RECEITAS' THEN valor ELSE 0 END) -  SUM(CASE WHEN tipo = 'DESPESAS' THEN valor ELSE 0 END) AS saldo FROM transacoes";
 	
 	@Override
 	public boolean criarTransacao(Transacoes transacao) {
@@ -188,15 +188,9 @@ public class TransacoesIMP implements TransacoesDAO{
 	}
 
 	public double calcularSaldo() {
-	    String sql = """
-	        SELECT 
-	            SUM(CASE WHEN tipo = 'RECEITAS' THEN valor ELSE 0 END) -
-	            SUM(CASE WHEN tipo = 'DESPESAS' THEN valor ELSE 0 END) AS saldo
-	        FROM transacoes
-	    """;
 
 	    try (var conn = DatabaseConnection.getConnection();
-	         var stmt = conn.prepareStatement(sql);
+	         var stmt = conn.prepareStatement(CALCULA_SALDO);
 	         var rs = stmt.executeQuery()) {
 
 	        if (rs.next()) return rs.getDouble("saldo");

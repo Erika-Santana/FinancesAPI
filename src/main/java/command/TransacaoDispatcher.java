@@ -19,20 +19,20 @@ public class TransacaoDispatcher {
     private ChainAbstract chain;
 
     public TransacaoDispatcher() {
-    	ChainAbstract listar = new ListarTransacoesChain();
+    	ChainAbstract resumo = new ResumoTransacoesChain();
     	ChainAbstract buscar = new BuscarTransacoesPorIDChain();
+    	ChainAbstract listar = new ListarTransacoesChain();
     	ChainAbstract criar = new AddTransacoesChain();
     	ChainAbstract atualizar = new UpdateTransacoesChain();
     	ChainAbstract excluir = new ExcluirTransacoesChain();
-    	ChainAbstract resumo = new ResumoTransacoesChain();
 
-        listar.setNext(buscar);
-        buscar.setNext(criar);
-        criar.setNext(atualizar);
-        atualizar.setNext(excluir);
-        excluir.setNext(resumo);
-       
+    	resumo.setNext(buscar);
+    	buscar.setNext(listar);
+    	listar.setNext(criar);
+    	criar.setNext(atualizar);
+    	atualizar.setNext(excluir);
 
+      
         this.chain = listar;
     }
 

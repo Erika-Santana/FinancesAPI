@@ -14,26 +14,29 @@ import model.entities.Transacoes;
 
 public class ResumoFinanceiroCommand implements Command {
 
+	@Override
+	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	    TransacoesIMP dao = new TransacoesIMP();
 
-		@Override
-		public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
-			 TransacoesIMP dao = new TransacoesIMP();
+	    Map<String, Double> receitas = dao.totalPorCategoria("RECEITAS");
+	    Map<String, Double> despesas = dao.totalPorCategoria("DESPESAS");
+	    double saldo = dao.calcularSaldo();
+	    double totalReceitas = receitas.values().stream().mapToDouble(Double::doubleValue).sum();
+	    double totalDespesas = despesas.values().stream().mapToDouble(Double::doubleValue).sum();
 
-		        Map<String, Double> receitas = dao.totalPorCategoria("RECEITAS");
-		        Map<String, Double> despesas = dao.totalPorCategoria("DESPESAS");
-		        double saldo = dao.calcularSaldo();
+	    JsonObject json = new JsonObject();
+	    json.add("receitasPorCategoria", new Gson().toJsonTree(receitas));
+	    json.add("despesasPorCategoria", new Gson().toJsonTree(despesas));
+	    json.addProperty("saldoTotal", saldo);
+	    json.addProperty("totalReceitas", totalReceitas);
+	    json.addProperty("totalDespesas", totalDespesas);
 
-		        System.out.print("Entrou no meu DAO do Resumo");
-		        JsonObject json = new JsonObject();
-		        json.add("receitasPorCategoria", new Gson().toJsonTree(receitas));
-		        json.add("despesasPorCategoria", new Gson().toJsonTree(despesas));
-		        json.addProperty("saldoTotal", saldo);
+	    response.setContentType("application/json");
+	    PrintWriter out = response.getWriter();
+	    out.print(json.toString());
+	    out.flush();
+	}
 
-		        response.setContentType("application/json");
-		        PrintWriter out = response.getWriter();
-		        out.print(json.toString());
-		        out.flush();
-		}
 	
 }
 
