@@ -1,0 +1,16 @@
+CREATE DATABASE IF NOT EXISTS finances;
+USE finances;
+
+DROP TABLE transacoes;
+CREATE TABLE transacoes(
+	ID INT AUTO_INCREMENT PRIMARY KEY,
+    descricao VARCHAR(255) NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    tipo VARCHAR(255) NOT NULL, 
+    categoria VARCHAR(255) NOT NULL, 
+    date_creation DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+
