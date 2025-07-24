@@ -106,6 +106,7 @@ public class TransacoesIMP implements TransacoesDAO{
 	        parametros.add(ano);
 	    }
 
+	    System.out.print("Valor do offset"+ offset);
 	    transacoes.append(" ORDER BY date_creation DESC LIMIT ? OFFSET ?");
 	    parametros.add(limit);
 	    parametros.add(offset);
