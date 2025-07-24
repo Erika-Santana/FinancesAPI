@@ -32,8 +32,7 @@ public class FrontControllerServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-        	 
+        try {        	 
             if (chain != null) {
                 chain.handle(request, response);
             } else {
